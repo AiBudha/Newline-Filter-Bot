@@ -74,18 +74,6 @@ Welcome to New Line Movies Bot! A simple and powerful bot for indexing files.
 - **Start Command**: `python bot.py`
 - *The bot includes a built-in health check server for Render compatibility.*
 
-<details><summary>Deploy To Heroku</summary>
-<p>
-<br>
-Ensure you have set all required variables in your Heroku app settings.
-</p>
-</details>
-
-<details><summary>Deploy To Koyeb</summary>
-<br>
-<b>Set up a new service on Koyeb and connect your repository.</b>
-<br>
-</details>
 
 <details><summary>Deploy To Render</summary>
 <br>
