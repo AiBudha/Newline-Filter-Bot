@@ -1,11 +1,11 @@
-if [ -z $UPSTREAM_REPO ]
+if [ -z "$UPSTREAM_REPO" ]
 then
-  echo "Repository not found, ensure UPSTREAM_REPO is set."
+  echo "No UPSTREAM_REPO found, using local files..."
 else
   echo "Cloning Custom Repo from $UPSTREAM_REPO "
-  git clone $UPSTREAM_REPO /bot
+  git clone "$UPSTREAM_REPO" /bot_upstream
+  cp -r /bot_upstream/* .
 fi
-cd /bot
-pip3 install -U -r requirements.txt
+
 echo "Starting New Line Movies Bot...."
 python3 bot.py
