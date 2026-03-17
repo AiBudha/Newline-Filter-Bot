@@ -2,9 +2,8 @@ import os
 import logging
 import random
 import asyncio
-import pyrogram
 from Script import script
-from pyrogram import Client, filters, enums
+from pyrogram import Client, filters, enums, types
 from pyrogram.errors import ChatAdminRequired, FloodWait
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from database.ia_filterdb import Media, get_file_details, unpack_new_file_id, get_bad_files
@@ -21,7 +20,7 @@ logger = logging.getLogger(__name__)
 BATCH_FILES = {}
 
 @Client.on_message(filters.command("help") & filters.incoming)
-async def help_command(client: Client, message: pyrogram.types.Message):
+async def help_command(client: Client, message: types.Message):
     buttons = [[
         InlineKeyboardButton('Jᴏɪɴ Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ', url=CHNL_LNK)
     ]]
@@ -35,7 +34,7 @@ async def help_command(client: Client, message: pyrogram.types.Message):
     )
 
 @Client.on_message(filters.command("start") & filters.incoming)
-async def start(client: Client, message: pyrogram.types.Message):
+async def start(client: Client, message: types.Message):
     if message.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
         buttons = [[
                     InlineKeyboardButton('Jᴏɪɴ Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ', url=CHNL_LNK)
@@ -317,7 +316,7 @@ async def start(client: Client, message: pyrogram.types.Message):
                     
 
 @Client.on_message(filters.command('channel') & filters.user(ADMINS))
-async def channel_info(bot: Client, message: pyrogram.types.Message):
+async def channel_info(bot: Client, message: types.Message):
            
     """Send basic information of channel"""
     if isinstance(CHANNELS, (int, str)):
@@ -348,7 +347,7 @@ async def channel_info(bot: Client, message: pyrogram.types.Message):
 
 
 @Client.on_message(filters.command('logs') & filters.user(ADMINS))
-async def log_file(bot: Client, message: pyrogram.types.Message):
+async def log_file(bot: Client, message: types.Message):
     """Send log file"""
     try:
         await message.reply_document('Logs.txt')
@@ -356,7 +355,7 @@ async def log_file(bot: Client, message: pyrogram.types.Message):
         await message.reply(str(e))
 
 @Client.on_message(filters.command('delete') & filters.user(ADMINS))
-async def delete(bot: Client, message: pyrogram.types.Message):
+async def delete(bot: Client, message: types.Message):
     """Delete file from database"""
     reply = message.reply_to_message
     if reply and reply.media:
@@ -404,7 +403,7 @@ async def delete(bot: Client, message: pyrogram.types.Message):
 
 
 @Client.on_message(filters.command('deleteall') & filters.user(ADMINS))
-async def delete_all_index(bot: Client, message: pyrogram.types.Message):
+async def delete_all_index(bot: Client, message: types.Message):
     await message.reply_text(
         'Tʜɪs ᴡɪʟʟ ᴅᴇʟᴇᴛᴇ ᴀʟʟ ɪɴᴅᴇxᴇᴅ ғɪʟᴇs.\nDᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴄᴏɴᴛɪɴᴜᴇ ?',
         reply_markup=InlineKeyboardMarkup(
@@ -433,7 +432,7 @@ async def delete_all_index_confirm(bot, message):
 
 
 @Client.on_message(filters.command('settings'))
-async def settings(client: Client, message: pyrogram.types.Message):
+async def settings(client: Client, message: types.Message):
     userid = message.from_user.id if message.from_user else None
     if not userid:
         return await message.reply(f"Yᴏᴜ ᴀʀᴇ ᴀɴᴏɴʏᴍᴏᴜs ᴀᴅᴍɪɴ. Usᴇ /connect {message.chat.id} ɪɴ PM")
@@ -611,7 +610,7 @@ async def settings(client: Client, message: pyrogram.types.Message):
 
 
 @Client.on_message(filters.command('set_template'))
-async def save_template(client: Client, message: pyrogram.types.Message):
+async def save_template(client: Client, message: types.Message):
     sts = await message.reply("Cʜᴇᴄᴋɪɴɢ ᴛᴇᴍᴘʟᴀᴛᴇ...")
     userid = message.from_user.id if message.from_user else None
     if not userid:
@@ -655,7 +654,7 @@ async def save_template(client: Client, message: pyrogram.types.Message):
 
 
 @Client.on_message((filters.command(["request", "Request"]) | filters.regex("#request") | filters.regex("#Request")) & filters.group)
-async def requests(bot: Client, message: pyrogram.types.Message):
+async def requests(bot: Client, message: types.Message):
     if REQST_CHANNEL is None or SUPPORT_CHAT_ID is None: return # Must add REQST_CHANNEL and SUPPORT_CHAT_ID to use this feature
     if message.reply_to_message and SUPPORT_CHAT_ID == message.chat.id:
         chat_id = message.chat.id
@@ -734,7 +733,7 @@ async def requests(bot: Client, message: pyrogram.types.Message):
 
         
 @Client.on_message(filters.command("send") & filters.user(ADMINS))
-async def send_msg(bot: Client, message: pyrogram.types.Message):
+async def send_msg(bot: Client, message: types.Message):
     if message.reply_to_message:
         target_id = message.text.split(" ", 1)[1]
         out = "Usᴇʀs Sᴀᴠᴇᴅ Iɴ DB Aʀᴇ:\n\n"
