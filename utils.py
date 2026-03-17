@@ -48,6 +48,8 @@ class temp(object):
     VERIFY = {}
     SEND_ALL_TEMP = {}
     KEYWORD = {}
+    SEARCH_CACHE = {}
+    IMDB_CACHE = {}
 
 async def is_subscribed(bot, query=None, userid=None):
     if not AUTH_CHANNEL and not AUTH_CHANNEL2 and not REQ_CHANNEL:
@@ -122,6 +124,10 @@ async def get_poster(query, bulk=False, id=False, file=None):
         movieid = movieid[0].movieID
     else:
         movieid = query
+    
+    if movieid in temp.IMDB_CACHE:
+        return temp.IMDB_CACHE[movieid]
+
     movie = imdb.get_movie(movieid)
     if movie.get("original air date"):
         date = movie["original air date"]
@@ -139,7 +145,7 @@ async def get_poster(query, bulk=False, id=False, file=None):
     if plot and len(plot) > 800:
         plot = plot[0:800] + "..."
 
-    return {
+    movie_data = {
         'title': movie.get('title'),
         'votes': movie.get('votes'),
         "aka": list_to_str(movie.get("akas")),
@@ -168,6 +174,14 @@ async def get_poster(query, bulk=False, id=False, file=None):
         'rating': str(movie.get("rating")),
         'url':f'https://www.imdb.com/title/tt{movieid}'
     }
+    
+    # Keep cache size small for Render free tier
+    if len(temp.IMDB_CACHE) >= 100:
+        # Simple pop of an arbitrary item to keep size under control
+        temp.IMDB_CACHE.pop(next(iter(temp.IMDB_CACHE)))
+        
+    temp.IMDB_CACHE[movieid] = movie_data
+    return movie_data
 # https://github.com/odysseusmax/animated-lamp/blob/2ef4730eb2b5f0596ed6d03e7b05243d93e3415b/bot/utils/broadcast.py#L37
 
 async def broadcast_messages(user_id, message):

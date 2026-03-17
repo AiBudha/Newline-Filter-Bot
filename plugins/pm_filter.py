@@ -1522,6 +1522,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
     
 async def auto_filter(client, msg, spoll=False):
+    import time
+    start_time = time.time()
     reqstr1 = msg.from_user.id if msg.from_user else 0
     reqstr = await client.get_users(reqstr1)
     if not spoll:
@@ -1531,8 +1533,19 @@ async def auto_filter(client, msg, spoll=False):
         if re.findall("((^\/|^,|^!|^\.|^[\U0001F600-\U000E007F]).*)", message.text):
             return
         if len(message.text) < 100:
-            search = message.text
-            files, offset, total_results = await get_search_results(message.chat.id, search.lower(), offset=0)
+            search = message.text.lower()
+            
+            # Use Cache if available
+            if search in temp.SEARCH_CACHE:
+                files, offset, total_results = temp.SEARCH_CACHE[search]
+            else:
+                files, offset, total_results = await get_search_results(message.chat.id, search, offset=0)
+                
+                # Cache results (keep size small for Render)
+                if len(temp.SEARCH_CACHE) >= 50:
+                    temp.SEARCH_CACHE.pop(next(iter(temp.SEARCH_CACHE)))
+                temp.SEARCH_CACHE[search] = (files, offset, total_results)
+
             if not files:
                 if settings["spell_check"]:
                     return await advantage_spell_chok(client, msg)
@@ -1665,6 +1678,11 @@ async def auto_filter(client, msg, spoll=False):
         )
     else:
         cap = f"<b>Hey 👋🏻 {message.from_user.mention} 😍\n\n<i>🔖 Title : {search}\n📫 Your Files is Ready Now</i></b>"
+    
+    # Add footer for professional look
+    search_time = "{:.2f} sec".format(time.time() - start_time)
+    cap += f"\n\n<b>🔍 Rᴇsᴜʟᴛs Fᴏᴜɴᴅ: {total_results}\n⏱️ Tɪᴍᴇ Tᴀᴋᴇɴ: {search_time}</b>"
+    
     if imdb and imdb.get('poster'):
         try:
             hehe = await message.reply_text(cap[:1024], reply_markup=InlineKeyboardMarkup(btn))

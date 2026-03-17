@@ -156,20 +156,23 @@ async def index_files_to_db(lst_msg_id, chat, msg, bot):
                     await msg.edit_text(
                         text=f"Total messages fetched: <code>{current}</code>\nTotal messages saved: <code>{total_files}</code>\nDuplicate Files Skipped: <code>{duplicate}</code>\nDeleted Messages Skipped: <code>{deleted}</code>\nNon-Media messages skipped: <code>{no_media + unsupported}</code>(Unsupported Media - `{unsupported}` )\nErrors Occurred: <code>{errors}</code>",
                         reply_markup=reply)
-                if message.empty:
-                    deleted += 1
-                    continue
-                elif not message.media:
+                
+                # Optimized media check
+                media_type = message.media
+                if not media_type:
                     no_media += 1
                     continue
-                elif message.media not in [enums.MessageMediaType.VIDEO, enums.MessageMediaType.AUDIO, enums.MessageMediaType.DOCUMENT]:
+                
+                if media_type not in [enums.MessageMediaType.VIDEO, enums.MessageMediaType.AUDIO, enums.MessageMediaType.DOCUMENT]:
                     unsupported += 1
                     continue
-                media = getattr(message, message.media.value, None)
+
+                media = getattr(message, media_type.value, None)
                 if not media:
                     unsupported += 1
                     continue
-                media.file_type = message.media.value
+                
+                media.file_type = media_type.value
                 media.caption = message.caption
                 aynav, vnay = await save_file(media)
                 if aynav:
