@@ -1,15 +1,6 @@
-<p align="center">
-  <img src="https://telegra.ph/file/171925d184de01b3055dc.jpg" alt="New Line Movies Logo">
-</p>
-<h1 align="center">
-  New Line Movies Bot
-</h1>
+# New Line Movies Bot
 
-![Typing SVG](https://readme-typing-svg.herokuapp.com/?lines=Welcome+To+New+Line+Movies!;Created+by+New+Line+Movies!;A+simple+and+powerful+Bot!;Indexes+Files+above+2GB;Bot+with+double+fsub!;Start+message+with+pic!;And+more+features!)
-</p>
-
-<a href="https://www.python.org/"> <img src="https://img.shields.io/badge/Written%20in-Python-skyblue?style=for-the-badge&logo=python" alt="Python" /> </a>
-<a href="https://pypi.org/project/Pyrogram/"> <img src="https://img.shields.io/pypi/v/pyrogram?color=white&label=pyrogram&logo=python&logoColor=blue&style=for-the-badge" /></a>
+Welcome to New Line Movies Bot! A simple and powerful bot for indexing files.
 
 ## Features
 - [x] **Double Force Subscribe** (Configurable via Bot)
